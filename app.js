@@ -8,7 +8,7 @@ app.get('/', function(req, res) {
   res.send('hello express');
 });
 
-// Catchall. If no routes handle the request and no errors have been generated
+// Catch-all. If no routes handle the request and no errors have been generated
 // then we land here, where we set the status to 404 and forward on to the
 // primary error handler
 app.use(function(req, res, next) {
@@ -24,12 +24,8 @@ app.use(function(err, req, res, next) {
   res.send("Oh no, there was an error...");
 });
 
-module.exports = app;
-
 var server = http.createServer(app);
 
-server.listen(3000);
-
-server.on('listening', function() {
+server.listen(3000, function() {
   console.log("Server listening on port " + server.address().port);
 });
