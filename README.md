@@ -179,12 +179,18 @@ When we call `app.use` we are saying, "Every time a new request comes in run thi
 
 ### Building a simple logger
 
-To see this in action let's built a simple logger that will output strings as follows:
+To see this in action let's built a simple logger that will output strings of the form:
 
 ```
-GET /
-GET /some-route
-POST /contact
+[METHOD] [ROUTE] [DATE]
+```
+
+Example:
+
+```
+GET / Sun Jan 25 2015 22:27:07 GMT-0800 (PST)
+GET /some-route Sun Jan 25 2015 22:27:07 GMT-0800 (PST)
+POST /contact Sun Jan 25 2015 22:27:07 GMT-0800 (PST)
 ```
 
 Using express middleware, we can accomplish this pretty easily:
