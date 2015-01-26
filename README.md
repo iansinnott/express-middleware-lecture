@@ -6,7 +6,7 @@ This repo contains the source files for the lecture I gave at Makersquare.
 
 1. Intro (Simplifying Express)
 2. What is middleware?
-3. The relationship between express and middleware
+3. The relationship between Express and middleware
   * Explanation (it's just a function)
   * Build a simple logger
 4. Important points about middleware
@@ -24,9 +24,9 @@ This repo contains the source files for the lecture I gave at Makersquare.
 
 ## Simplifying Express
 
-So first things first, rather than starting with everything and figuring out what it all does, let's start with a base express configuration and add things as we need them.
+So first things first, rather than starting with everything and figuring out what it all does, let's start with a base Express configuration and add things as we need them.
 
-A standard Express app configuration using the express-generator NPM module will produce something like this:
+A standard Express app configuration using the `express-generator` NPM module will produce something like this:
 
 ```js
 var express = require('express');
@@ -85,9 +85,9 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 ```
 
-There's a lot going on there, and for anyone without experience using express that may look daunting if all we really want is a super simple application. 
+There's a lot going on there, and for anyone without experience using Express that may look daunting if all we really want is a super simple application. 
 
-The above configuration file also makes assumptions about what you will need in your project. This can be useful but it is quite detrimental to learning the ins and outs of express, because it does too much automatically. Let's start from a barebones express app and expand as needed. Here's our configuration file:
+The above configuration file also makes assumptions about what you will need in your project. This can be useful but it is quite detrimental to learning the ins and outs of Express, because it does too much automatically. Let's start from a barebones Express app and expand as needed. Here's our configuration file:
 
 ```js
 var express = require('express');
@@ -101,7 +101,15 @@ app.get('/', function(req, res) {
 app.listen(3000);
 ```
 
-# TODO write this section
+This file will responds to GET requests at `/`—the root URL. Any other requests will cause an Express error, because there is no request handler for any other route or method.
+
+If you open your browser and go to [localhost:3000](http://localhost:3000) you should see the text "hello express", or you could use CURL:
+
+```
+$ curl :3000
+```
+
+Now that we have a super simple Express app up and running, let's move on to middleware.
 
 ## Middleware
 
@@ -267,7 +275,7 @@ Even though we added the logging middleware _after_ the route, you might think i
 
 ### Middleware can be localized to routes
 
-Global middleware is really useful, but sometimes it would be unecessary to run certain middleware for _all_ routes and methods. That's why express let's you pass an optional string as the initial argument to `app.use`. Imagine we have an admin area on our website at `/admin`. We want to check to make sure a user is logged in before they access the page. A simple way to accomplish this would be:
+Global middleware is really useful, but sometimes it would be unecessary to run certain middleware for _all_ routes and methods. That's why Express let's you pass an optional string as the initial argument to `app.use`. Imagine we have an admin area on our website at `/admin`. We want to check to make sure a user is logged in before they access the page. A simple way to accomplish this would be:
 
 ```js
 app.use('/admin', function(req, res, next) {
@@ -282,7 +290,7 @@ This example assumes that `req.user` will be set if the user is already logged i
 
 ## Routes are just more middleware
 
-Usually when we talk about Express we talk about routes and middleware as separate, because conceptually they are. A "route" typically means the end of the middleware stack, the last response handler that is called and that decides ultimately how to respond to the request. However, to understand express it's important to undertand that routes themselves are also "middleware"—simply functions that get called under certain circumstances.
+Usually when we talk about Express we talk about routes and middleware as separate, because conceptually they are. A "route" typically means the end of the middleware stack, the last response handler that is called and that decides ultimately how to respond to the request. However, to understand Express it's important to understand that routes themselves are also "middleware"—simply functions that get called under certain circumstances.
 
 As an example, take a look at these two completely equivalent "routes". One is written as you would normally write a route, using `app.get` while the other is written as middleware, but the effect is exactly the same:
 
@@ -301,7 +309,7 @@ app.use('/', function(req, res, next) {
 });
 ```
 
-Using middlware syntax and manually checking the request method is of course more verbose, and certainly not what you want to do in practice. But it's important to realize that Express routes and express middleware ware actually on in the same. This is why, as mentioned in the docs and above... 
+Using middlware syntax and manually checking the request method is of course more verbose, and certainly not what you want to do in practice. But it's important to realize that Express routes and Express middleware ware actually on in the same. This is why, as mentioned in the docs and above... 
 
 > An Express application is essentially a series of middleware calls.
 
@@ -332,7 +340,7 @@ In the eyes of Express, this middleware is clearly an error handler because it e
 
 So, now we have an error handler but if you restart your server and navigate to a URL that we know there's no router for (ex: "/something") you will get a standard Express error, _NOT_ the custom error we just created. What happened?
 
-Since we aren't using any third party middlware yet, we know every piece of code that's being executed when a request hits the server. As a result, we can see that at no point is an error generated. This is crucial, because errors in express are not automatic. JavaScript errors will happily bring down your server, but if you want to handle them with easy you will need to manually call the `next` function and pass an error argument. That will let Express execute our custom error handling code as scene above. So, to make sure all 404's do indeed generate an error, we can add a catch-all midleware right above our error handler:
+Since we aren't using any third party middlware yet, we know every piece of code that's being executed when a request hits the server. As a result, we can see that at no point is an error generated. This is crucial, because errors in Express are not automatic. JavaScript errors will happily bring down your server, but if you want to handle them with easy you will need to manually call the `next` function and pass an error argument. That will let Express execute our custom error handling code as scene above. So, to make sure all 404's do indeed generate an error, we can add a catch-all midleware right above our error handler:
 
 ```js
 app.use(function(req, res, next) {
@@ -357,13 +365,13 @@ So, once again to reiterate:
 
 If you remember one thing from this lecture remember that, because it will give you a clear understanding of how Express works and more importantly how to extend it to suite your needs.
 
-That being said, there is currently a plethora of useful middleware in the wild that you will most likely encounter at one point or another if you stick with express.
+That being said, there is currently a plethora of useful middleware in the wild that you will most likely encounter at one point or another if you stick with Express.
 
 ### Useful & Common Middleware
 
 **[Body Parser](https://github.com/expressjs/body-parser)**
 
-This is one you're almost certain to see in most express apps, as it's useful for handling forms as well as AJAX requests.
+This is one you're almost certain to see in most Express apps, as it's useful for handling forms as well as AJAX requests.
 
 **[Serve Static](https://github.com/expressjs/body-parser)**
 
@@ -377,7 +385,7 @@ app.use(express.static(__dirname + '/public')));
 
 This is flexible logging software that can be used in development or production. Even though as we saw it's quite simple to write your own logging software, it's a better idea to use something standard like Morgan because you can be sure your logs will be well formatted, and it's also one lest thing for you to test.
 
-There's a ton of middleware out there, so whenever you run into a feature that express doesn't have but you would like chances are there's a middleware module for it. 
+There's a ton of middleware out there, so whenever you run into a feature that Express doesn't have but you would like chances are there's a middleware module for it. 
 
 ### Resource Links
 
