@@ -333,7 +333,7 @@ app.use(function(req, res, next) {
 
 This middleware matches any route and any method, and all it does is send an error message to the browser. If you added this at the top of all your middleware your site would continually send this error message to the client. However, by putting this at the very end of our app configuration we can allow all routes that weren't matched by previous middleware to effectively fall through and be caught here.
 
-However, since not every error is a 404, it's imortant to allow for other errors with other status codes. To accomplish this, Express recognizes middleware with four arguments instead of three as being an error handler.
+However, since not every error is a 404, it's important to allow for other errors with other status codes. To accomplish this, Express recognizes middleware with four arguments instead of three as being an error handler.
 
 ```js
 app.use(function(err, req, res, next) {
