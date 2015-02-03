@@ -346,7 +346,7 @@ In the eyes of Express, this middleware is clearly an error handler because it e
 
 So, now we have an error handler but if you restart your server and navigate to a URL that we know there's no router for (ex: "/something") you will get a standard Express error, _NOT_ the custom error we just created. What happened?
 
-Since we aren't using any third party middlware yet, we know every piece of code that's being executed when a request hits the server. As a result, we can see that at no point is an error generated. This is crucial, because errors in Express are not automatic. JavaScript errors will happily bring down your server, but if you want to handle them with easy you will need to manually call the `next` function and pass an error argument. That will let Express execute our custom error handling code as scene above. So, to make sure all 404's do indeed generate an error, we can add a catch-all midleware right above our error handler:
+Since we aren't using any third party middleware yet, we know every piece of code that's being executed when a request hits the server. As a result, we can see that at no point is an error generated. This is crucial, because errors in Express are not automatic. JavaScript errors will happily bring down your server, but if you want to handle them with easy you will need to manually call the `next` function and pass an error argument. That will let Express execute our custom error handling code as scene above. So, to make sure all 404's do indeed generate an error, we can add a catch-all middleware right above our error handler:
 
 ```js
 app.use(function(req, res, next) {
@@ -362,6 +362,25 @@ app.use(function(err, req, res, next) {
 ```
 
 Now if we restart our server we will get the result we want: All errors, 404 or otherwise, will be directed to our final error handler and we will get a response containing the string "Oh no, there was an error...".
+
+### A quick note on triggering errors
+
+In the example above we called `next` with a single `Error` object as the lone argument. To generate an Express error and jump directly to error handling middleware you need only call `next` with a truthy argument. For example:
+
+```js
+app.use(function(req, res, next) {
+
+  // All of these would trigger error handling middleware
+  next('hey there');
+  next(40);
+  next(true);
+
+});
+```
+
+The only exception to the above is calling `next('route')`. Calling `next` with the special string `'route'` will not cause an error. See [the docs here for more on this][nextdocs].
+
+[nextdocs]: http://expressjs.com/4x/api.html#app.METHOD
 
 ## Conclusion
 
